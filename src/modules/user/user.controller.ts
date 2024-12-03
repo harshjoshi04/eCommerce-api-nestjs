@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignInDTOEntity, SignUpDTOEntity } from 'src/dto/user.dto';
 import { Response } from 'express';
@@ -6,7 +6,7 @@ import { ResponseEntity } from 'src/interface/server.interface';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('sign-up')
   async signUp(
@@ -18,8 +18,17 @@ export class UserController {
   }
 
   @Post('sign-in')
-  async signIn(@Res() res: Response, @Body() data: SignInDTOEntity): Promise<void> {
+  async signIn(
+    @Res() res: Response,
+    @Body() data: SignInDTOEntity,
+  ): Promise<void> {
     const result: ResponseEntity = await this.userService.signIn(data);
     res.status(result.statusCode).json(result);
+  }
+
+  @Get()
+  async getUser(@Req() req: Request, @Res() res: Response): Promise<void> {
+    console.log(req['user']);
+    res.status(201).send('Welcome !');
   }
 }

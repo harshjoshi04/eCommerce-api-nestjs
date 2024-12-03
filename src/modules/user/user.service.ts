@@ -6,18 +6,21 @@ import { ResponseEntity } from 'src/interface/server.interface';
 import { UserSchemaEntity } from 'src/interface/user.interface';
 import { DatabaseProvider } from 'src/lib/databaseProviderEnum';
 import { MESSAGE } from 'src/lib/enum';
-import { comparePassword, HashPassword, isNullOrUndefined } from 'src/lib/shared';
+import {
+  comparePassword,
+  HashPassword,
+  isNullOrUndefined,
+} from 'src/lib/shared';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject(DatabaseProvider.USER) private userModel: Model<UserSchemaEntity>,
-    private jwtService: JwtService
-  ) { }
+    private jwtService: JwtService,
+  ) {}
 
   async signUp(user: SignUpDTOEntity): Promise<ResponseEntity> {
     try {
-
       // verify if user email exists or not
       const isMatch = await this.userModel.findOne({ email: user.email });
       if (!isNullOrUndefined(isMatch)) {
@@ -25,8 +28,8 @@ export class UserService {
           data: {},
           message: MESSAGE.emailexists,
           status: false,
-          statusCode: HttpStatus.BAD_REQUEST
-        }
+          statusCode: HttpStatus.BAD_REQUEST,
+        };
       }
       const hashPassword = await HashPassword(user.password);
       user.password = hashPassword;
@@ -39,6 +42,7 @@ export class UserService {
         statusCode: HttpStatus.CREATED,
       };
     } catch (error) {
+      console.log(error);
       return {
         data: {},
         message: MESSAGE.internalServer,
@@ -50,7 +54,9 @@ export class UserService {
 
   async signIn(data: SignInDTOEntity): Promise<ResponseEntity> {
     try {
-      const user: UserSchemaEntity = await this.userModel.findOne({ email: data.email });
+      const user: UserSchemaEntity = await this.userModel.findOne({
+        email: data.email,
+      });
       if (isNullOrUndefined(user)) {
         return {
           data: {},
@@ -70,7 +76,12 @@ export class UserService {
       }
       let { password, ...result } = JSON.parse(JSON.stringify(user));
       const token = this.jwtService.sign({ id: result._id });
-      return { data: { user: result, token }, message: MESSAGE.userLogin, status: true, statusCode: HttpStatus.OK }
+      return {
+        data: { user: result, token },
+        message: MESSAGE.userLogin,
+        status: true,
+        statusCode: HttpStatus.OK,
+      };
     } catch (error) {
       return {
         data: {},
