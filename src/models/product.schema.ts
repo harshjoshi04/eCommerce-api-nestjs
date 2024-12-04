@@ -20,7 +20,7 @@ export const ProductProvider = [
   {
     provide: DatabaseProvider.PRODUCT,
     useFactory: (connection: Connection) =>
-      connection.model(CollectionName.USER, ProductSchema),
+      connection.model(CollectionName.PRODUCT, ProductSchema),
     inject: ['DATABASE_CONNECTION'],
   },
 ];

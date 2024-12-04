@@ -3,5 +3,6 @@ export const MESSAGE = {
   userCreate: 'User craeted successfully.',
   userLogin: 'User login successfully.',
   emailexists: 'Email is already used.',
-  loginFailed: "Email or Password went wrong !"
+  loginFailed: 'Email or Password went wrong !',
+  createCategory: 'Category created successfully.',
 };

@@ -3,8 +3,12 @@ export interface ProductSchemaEntity {
   price: number;
   discountPrice: number;
   discountPer: number;
-  category: string;
+  category: string | CategorySchemaEntity;
   description: string;
   quantity: number;
   images: string[] | [];
+}
+
+export interface CategorySchemaEntity {
+  name: string;
 }
